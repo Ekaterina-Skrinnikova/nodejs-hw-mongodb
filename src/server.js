@@ -9,6 +9,7 @@ const PORT = Number(env('PORT', 3000));
 export const setupServer = () => {
   const app = express();
 
+  app.use(express.json());
   app.use(cors());
 
   app.use(
@@ -16,12 +17,13 @@ export const setupServer = () => {
       transport: { target: 'pino-pretty' },
     }),
   );
-  // app.use(express.json);
 
   app.get('/contacts', async (req, res) => {
     const contacts = await getAllContacts();
 
     res.status(200).json({
+      status: '200',
+      message: 'Successfully found contacts.',
       data: contacts,
     });
   });
@@ -38,7 +40,8 @@ export const setupServer = () => {
     }
 
     res.status(200).json({
-      message: `Successfully found contact with id ${contactId}!`,
+      status: '200',
+      message: `Successfully found contact with id=${contactId}!`,
       data: contact,
     });
   });
