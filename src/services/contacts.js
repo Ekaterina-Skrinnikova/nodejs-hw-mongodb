@@ -15,20 +15,13 @@ export const createContact = async (payload) => {
   return contact;
 };
 
-export const deleteContact = async (contactId) => {
-  const contact = await ContactsCollection.findOneAndDelete({ _id: contactId });
-  return contact;
-};
-
-export const patchContact = async (contacId, payload, options = {}) => {
+export const patchContact = async (contactId, payload, options = {}) => {
   const rawResult = await ContactsCollection.findOneAndUpdate(
-    {
-      _id: contacId,
-    },
+    { _id: contactId },
     payload,
     {
       new: true,
-      includeResultMetadata: true,
+      // includeResultMetadata: true,
       ...options,
     },
   );
@@ -39,4 +32,9 @@ export const patchContact = async (contacId, payload, options = {}) => {
     contact: rawResult.value,
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
   };
+};
+
+export const deleteContact = async (contactId) => {
+  const contact = await ContactsCollection.findOneAndDelete({ _id: contactId });
+  return contact;
 };
