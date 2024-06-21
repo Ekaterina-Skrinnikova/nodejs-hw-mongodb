@@ -2,9 +2,9 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
-import contactsRouter from './routers/contacts.js';
 import { errorHandler } from './middlerwares/errorHandler.js';
 import { notFoundHandler } from './middlerwares/notFoundHandler.js';
+import contactsRouter from './routers/contacts.js';
 
 const PORT = Number(env('PORT', 3000));
 
@@ -22,7 +22,7 @@ export const setupServer = () => {
 
   app.get('/', (req, res) => {
     res.json({
-      message: 'Hello,world!!!',
+      message: 'Hello, world!!!',
     });
   });
 
