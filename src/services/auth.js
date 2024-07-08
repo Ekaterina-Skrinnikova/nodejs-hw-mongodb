@@ -16,3 +16,17 @@ export const registerUser = async (payload) => {
     password: encryptedPassword,
   });
 };
+
+export const loginUser = async (payload) => {
+  const user = UsersCollection.findOne({ email: payload.email });
+
+  if (!user) {
+    throw createHttpError('404', 'User not found');
+  }
+
+  const isEquil = await bcrypt.compare(payload.password, user.password);
+
+  if (!isEquil) {
+    throw createHttpError('401', 'Unauthorized');
+  }
+};
