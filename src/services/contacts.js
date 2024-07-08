@@ -1,5 +1,5 @@
 import { contactsFieldList, sortOrderList } from '../constants/contacts.js';
-import { ContactsCollection } from '../db/contact.js';
+import { ContactsCollection } from '../db/models/contact.js';
 import { calcPaginationData } from '../utils/calcPaginationData.js';
 
 export const getAllContacts = async ({
