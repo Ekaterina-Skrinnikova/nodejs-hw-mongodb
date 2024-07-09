@@ -6,8 +6,10 @@ import { UsersCollection } from '../db/models/user.js';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
 
+export const findUser = (filter) => UsersCollection.findOne(filter);
+
 export const registerUser = async (payload) => {
-  const user = UsersCollection.findOne({ email: payload.email });
+  const user = await findUser({ email: payload.email });
 
   if (user) {
     throw createHttpError(409, 'Email in use');
@@ -21,7 +23,7 @@ export const registerUser = async (payload) => {
 };
 
 export const loginUser = async (payload) => {
-  const user = UsersCollection.findOne({ email: payload.email });
+  const user = await findUser({ email: payload.email });
 
   if (!user) {
     throw createHttpError(404, 'User not found');
@@ -87,6 +89,8 @@ export const refreshUserSession = async ({ sessionId, refreshToken }) => {
   }
 
   const newSession = createSession();
+
+  await SessionsCollection.deleteOne({ _id: sessionId, refreshToken });
 
   return SessionsCollection.create({
     userId: session.userId,

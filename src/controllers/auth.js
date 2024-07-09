@@ -1,5 +1,4 @@
 import { ONE_DAY } from '../constants/index.js';
-import { SessionsCollection } from '../db/models/session.js';
 import {
   loginUser,
   logoutUser,
@@ -47,8 +46,8 @@ export const logoutUserController = async (req, res) => {
     await logoutUser(req.cookies.sessionId);
   }
 
-  res.clearCookies('sessionId');
-  res.clearCookies('refreshToken');
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
 
   res.status(204).send();
 };

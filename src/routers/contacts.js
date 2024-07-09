@@ -13,8 +13,11 @@ import {
 } from '../validation/contacts.js';
 import { validateBody } from '../middlerwares/validateBody.js';
 import { isValidId } from '../middlerwares/isValidId.js';
+import { authenticate } from '../middlerwares/authenticate.js';
 
 const router = Router();
+
+router.use(authenticate);
 
 router.get('/', ctrlWrapper(getAllContactsController));
 

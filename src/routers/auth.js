@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { registerUserSchema, loginUserSchema } from '../validation/auth.js';
+// import { loginUserSchema } from '../validation/auth.js';
 import {
   loginUserController,
   logoutUserController,
