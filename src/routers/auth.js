@@ -5,13 +5,13 @@ import {
   loginUserSchema,
   requestResetEmailSchema,
 } from '../validation/auth.js';
-// import { loginUserSchema } from '../validation/auth.js';
+
 import {
   loginUserController,
   logoutUserController,
   refreshUserSessionController,
   registerUserController,
-  requestResetTokenController,
+  requestResetEmailController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlerwares/validateBody.js';
 
@@ -34,9 +34,9 @@ authRouter.post('/logout', ctrlWrapper(logoutUserController));
 authRouter.post('/refresh', ctrlWrapper(refreshUserSessionController));
 
 authRouter.post(
-  '/request-reset-email',
+  '/send-reset-email',
   validateBody(requestResetEmailSchema),
-  ctrlWrapper(requestResetTokenController),
+  ctrlWrapper(requestResetEmailController),
 );
 
 export default authRouter;

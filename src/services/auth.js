@@ -7,7 +7,7 @@ import { UsersCollection } from '../db/models/user.js';
 import { FIFTEEN_MINUTES, ONE_DAY, SMTP } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
-import { sendMail } from '../utils/sendMail.js';
+import { sendEmail } from '../utils/sendEmail.js';
 
 export const findUser = (filter) => UsersCollection.findOne(filter);
 
@@ -33,9 +33,9 @@ export const loginUser = async (payload) => {
     throw createHttpError(404, 'User not found');
   }
 
-  if (!user.verify) {
-    throw createHttpError(401, 'User not verify');
-  }
+  // if (!user.verify) {
+  //   throw createHttpError(401, 'User not verify');
+  // }
 
   const isEquil = await bcrypt.compare(payload.password, user.password);
 
@@ -110,21 +110,22 @@ export const refreshUserSession = async ({ sessionId, refreshToken }) => {
 
 export const requestResetToken = async (email) => {
   const user = await UsersCollection.findOne({ email });
-
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
-
   const resetToken = jwt.sign(
     {
       sub: user._id,
       email,
     },
+
     env('JWT_SECRET'),
-    { expiresIn: '15m' },
+    {
+      expiresIn: '15m',
+    },
   );
 
-  await sendMail({
+  await sendEmail({
     from: env(SMTP.SMTP_FROM),
     to: email,
     subject: 'Reset your password',
