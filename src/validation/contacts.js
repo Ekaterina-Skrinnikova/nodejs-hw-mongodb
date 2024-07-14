@@ -12,9 +12,7 @@ export const createContactSchema = Joi.object({
 
 export const updateContactSchema = Joi.object({
   name: Joi.string().min(3).max(20),
-  phoneNumber: Joi.string()
-    .pattern(/^\+?3?8?(0\d{9})$/)
-    .required(),
+  phoneNumber: Joi.string().pattern(/^\+?3?8?(0\d{9})$/),
   email: Joi.string().email(),
   isFavourite: Joi.boolean(),
   contactType: Joi.string().min(3).max(20),
