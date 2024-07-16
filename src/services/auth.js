@@ -16,6 +16,10 @@ import {
 import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
 import { sendEmail } from '../utils/sendEmail.js';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 export const findUser = (filter) => UsersCollection.findOne(filter);
 
@@ -181,4 +185,31 @@ export const resetPassword = async (payload) => {
     { _id: user._id },
     { password: encryptedPassword },
   );
+};
+
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+
+  const payload = loginTicket.getPayload(); //данні про користувача
+  if (!payload) {
+    throw createHttpError(401);
+  }
+
+  let user = await UsersCollection.findOne({ email: payload.email });
+  if (!user) {
+    // якщо юзера немає, то створюємо його і пароль будь-який
+    const password = await bcrypt.hash(randomBytes(10), 10);
+    user = await UsersCollection.create({
+      name: getFullNameFromGoogleTokenPayload(payload),
+      email: payload.email,
+      password,
+    });
+  }
+
+  const newSession = createSession();
+
+  return await SessionsCollection.create({
+    userId: user._id,
+    ...newSession,
+  });
 };
