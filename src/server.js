@@ -7,6 +7,7 @@ import { errorHandler } from './middlerwares/errorHandler.js';
 import { notFoundHandler } from './middlerwares/notFoundHandler.js';
 import router from './routers/index.js';
 import { UPLOAD_DIR } from './constants/index.js';
+import { swaggerDocs } from './middlerwares/swaggerDocs.js';
 
 const PORT = Number(env('PORT', 3000));
 
@@ -17,6 +18,7 @@ export const setupServer = () => {
   app.use(cookieParser());
   app.use(express.json());
   app.use('/uploads', express.static(UPLOAD_DIR)); //можливість передавати статичні файли
+  app.use('/api-docs', swaggerDocs());
 
   app.use(
     pino({
