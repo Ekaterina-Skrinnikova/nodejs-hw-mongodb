@@ -31,7 +31,7 @@
     "/contacts": {
       "get": {
         "tags": [
-          "Conacts"
+          "Contacts"
         ],
         "summary": "Get list of Conacts",
         "operationId": "getConacts",
