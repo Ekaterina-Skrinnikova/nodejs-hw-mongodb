@@ -3,17 +3,25 @@ import pino from 'pino-http';
 import cors from 'cors';
 import createHttpError from 'http-errors';
 import { env } from './utils/env.js';
-import { getAllContacts, getContactById } from './services/contacts.js';
+
+import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlerwares/errorHandler.js';
 import { notFoundHandler } from './middlerwares/notFoundHandler.js';
+import router from './routers/index.js';
+import { UPLOAD_DIR } from './constants/index.js';
+import { swaggerDocs } from './middlerwares/swaggerDocs.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
 
 const PORT = Number(env('PORT', 3000));
 
 export const setupServer = () => {
   const app = express();
 
-  app.use(express.json());
   app.use(cors());
+  app.use(cookieParser());
+  app.use(express.json());
+  app.use('/uploads', express.static(UPLOAD_DIR)); //можливість передавати статичні файли
+  app.use('/api-docs', swaggerDocs());
 
   app.use(
     pino({
@@ -27,37 +35,12 @@ export const setupServer = () => {
     });
   });
 
-  app.get('/contacts', async (req, res, next) => {
-    const contacts = await getAllContacts();
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  });
+  app.use(router);
 
-  app.get('/contacts/:contactId', async (req, res, next) => {
-    try {
-      const { contactId } = req.params;
-      const contact = await getContactById(contactId);
+  app.use('*', notFoundHandler);
 
-      if (!contact) {
-        return res.status(404).json({ message: 'Contact not found' });
-      }
+  app.use(errorHandler);
 
-      res.status(200).json({
-        status: 200,
-        message: `Successfully found contact with id=${contactId}!`,
-        data: contact,
-      });
-    } catch (error) {
-      if (error.message.includes('Cast to ObjectId')) {
-        error.status = 404;
-      }
-      const { status = 500 } = error;
-      res.status(status).json({ message: error.message });
-    }
-  });
 
   app.use('*', notFoundHandler);
 
