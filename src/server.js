@@ -1,13 +1,16 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
+import createHttpError from 'http-errors';
 import { env } from './utils/env.js';
+
 import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlerwares/errorHandler.js';
 import { notFoundHandler } from './middlerwares/notFoundHandler.js';
 import router from './routers/index.js';
 import { UPLOAD_DIR } from './constants/index.js';
 import { swaggerDocs } from './middlerwares/swaggerDocs.js';
+import { getAllContacts, getContactById } from './services/contacts.js';
 
 const PORT = Number(env('PORT', 3000));
 
@@ -33,6 +36,11 @@ export const setupServer = () => {
   });
 
   app.use(router);
+
+  app.use('*', notFoundHandler);
+
+  app.use(errorHandler);
+
 
   app.use('*', notFoundHandler);
 
