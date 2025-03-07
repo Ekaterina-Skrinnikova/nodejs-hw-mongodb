@@ -10,6 +10,11 @@ export const initMongoConnection = async () => {
 
     await mongoose.connect(
       `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority&appName=Cluster0`,
+      {
+        ssl: true,
+        tls: true,
+        tlsInsecure: false,
+      },
     );
     console.log('Mongo connection successfully established!');
   } catch (e) {
