@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   registerUserSchema,
   loginUserSchema,
@@ -19,6 +18,7 @@ import {
   resetPasswordController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlerwares/validateBody.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 const authRouter = Router();
 
